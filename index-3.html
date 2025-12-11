@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 7: SAR Comprehensive Quiz</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .name-input-wrapper {
+            margin-top: 20px;
+        }
+
+        #playerName {
+            width: 90%;
+            max-width: 400px;
+            padding: 12px 20px;
+            border-radius: 25px;
+            border: 2px solid white;
+            font-size: 1em;
+            text-align: center;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        #playerName:focus {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255,255,255,0.5);
+        }
+
+        .progress-bar {
+            background: #f0f0f0;
+            height: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            padding: 20px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        .quiz-content {
+            padding: 30px;
+        }
+
+        .question-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .question-card:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        .question-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .question-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .question-text {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #2d3748;
+            line-height: 1.6;
+        }
+
+        .options {
+            margin: 20px 0;
+        }
+
+        .option {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .option:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .option-letter {
+            font-weight: bold;
+            margin-right: 12px;
+            color: #667eea;
+            font-size: 1.1em;
+        }
+
+        .option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .option.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .option.disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .answer-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: #e7f3ff;
+            border-left: 4px solid #667eea;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .answer-section.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .answer-label {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .explanation {
+            color: #2d3748;
+            line-height: 1.6;
+            margin-top: 10px;
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .result-card.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .final-score {
+            font-size: 4em;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .grade-message {
+            font-size: 1.5em;
+            margin: 20px 0;
+        }
+
+        .button {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .section-title {
+            background: #f8f9fa;
+            padding: 15px 25px;
+            margin: 30px -30px 20px -30px;
+            border-left: 5px solid #667eea;
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #2d3748;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            color: #6c757d;
+            border-top: 2px solid #e9ecef;
+        }
+
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95em;
+            margin-top: 15px;
+        }
+
+        .leaderboard-table thead tr {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .leaderboard-table th {
+            text-align: left;
+            padding: 12px 8px;
+            font-weight: 600;
+        }
+
+        .leaderboard-table td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .leaderboard-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .leaderboard-table tbody tr:nth-child(1) td:first-child {
+            color: #FFD700;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .leaderboard-table tbody tr:nth-child(2) td:first-child {
+            color: #C0C0C0;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .leaderboard-table tbody tr:nth-child(3) td:first-child {
+            color: #CD7F32;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                border-radius: 0;
+            }
+
+            .header h1 {
+                font-size: 1.5em;
+            }
+
+            .quiz-content {
+                padding: 15px;
+            }
+
+            .stats {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .section-title {
+                margin: 20px -15px 15px -15px;
+                font-size: 1.1em;
+            }
+
+            .leaderboard-table {
+                font-size: 0.85em;
+            }
+
+            .leaderboard-table th,
+            .leaderboard-table td {
+                padding: 8px 4px;
+            }
+        }
+
+        .check-mark {
+            margin-left: auto;
+            font-size: 1.5em;
+        }
+
+        .firebase-status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 0.9em;
+        }
+
+        .firebase-status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .firebase-status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .firebase-status.warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 Chapter 7: Structure-Activity Relationship (SAR)</h1>
+            <p>Comprehensive Quiz - 25 Questions</p>
+            <div class="name-input-wrapper">
+                <input
+                    id="playerName"
+                    type="text"
+                    placeholder="👤 Enter your name (for leaderboard)"
+                    maxlength="30"
+                />
+            </div>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-value" id="answeredCount">0</div>
+                <div class="stat-label">Answered</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="correctCount">0</div>
+                <div class="stat-label">Correct</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="scorePercent">0%</div>
+                <div class="stat-label">Score</div>
+            </div>
+        </div>
+
+        <div id="firebaseStatus"></div>
+
+        <div class="quiz-content" id="quizContent">
+            <!-- Questions will be inserted here -->
+        </div>
+
+        <div class="result-card" id="resultCard">
+            <h2>🎉 Quiz Complete!</h2>
+            <div class="final-score" id="finalScore">0%</div>
+            <div class="grade-message" id="gradeMessage"></div>
+            <button class="button" onclick="restartQuiz()">🔄 Restart Quiz</button>
+            <button class="button" onclick="reviewAnswers()">📝 Review Answers</button>
+        </div>
+
+        <div class="footer">
+            <p>💡 Tip: Click on any option to see the correct answer and explanation</p>
+            <p style="margin-top: 10px;">Made for SAR Chapter 7 Study • Share with friends! 🤝</p>
+        </div>
+
+        <div class="section-title" style="margin-top: 30px;">
+            🏆 Leaderboard - Top 10 Scores
+        </div>
+        <div class="quiz-content" id="leaderboardSection">
+            <p style="text-align: center; color: #6c757d;">Loading leaderboard...</p>
+        </div>
+
+        <div class="footer" style="border-top: none; padding-top: 10px;">
+            <p style="font-size: 0.85em; opacity: 0.7;">
+                Leaderboard powered by Firebase • Scores are saved globally
+            </p>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <script>
+        // ✅ FIREBASE CONFIGURATION - CONNECTED!
+        const firebaseConfig = {
+            apiKey: "AIzaSyDVu83jBXJuwIs8RRhTEM9INEfcGqKbVmQ",
+            authDomain: "sar-quiz.firebaseapp.com",
+            projectId: "sar-quiz",
+            storageBucket: "sar-quiz.firebasestorage.app",
+            messagingSenderId: "679048426138",
+            appId: "1:679048426138:web:3a1378f70b089c7460a523",
+            measurementId: "G-4J06CEENZC"
+        };
+
+        let firebaseInitialized = false;
+        let db = null;
+        const RESULTS_COLLECTION = "sarQuizResults";
+        let answeredCount = 0;
+        let correctCount = 0;
+        let currentSection = "";
+
+        function initializeFirebase() {
+            try {
+                if (firebaseConfig.apiKey === "YOUR_API_KEY_HERE") {
+                    showFirebaseStatus('warning', '⚠️ Firebase not configured. Leaderboard disabled. Quiz works normally!');
+                    return false;
+                }
+                firebase.initializeApp(firebaseConfig);
+                db = firebase.firestore();
+                firebaseInitialized = true;
+                showFirebaseStatus('success', '✅ Connected to leaderboard!');
+                return true;
+            } catch (error) {
+                console.error("Firebase init error:", error);
+                showFirebaseStatus('error', '❌ Leaderboard connection failed. Quiz works normally!');
+                return false;
+            }
+        }
+
+        function showFirebaseStatus(type, message) {
+            const statusDiv = document.getElementById('firebaseStatus');
+            statusDiv.className = `firebase-status ${type}`;
+            statusDiv.textContent = message;
+            if (type === 'success' || type === 'warning') {
+                setTimeout(() => statusDiv.style.display = 'none', 5000);
+            }
+        }
+
+        // QUIZ DATA - Sample questions (add all 120 here)
+        const quizData = [
+            {
+                section: "Introduction to SAR",
+                question: "What is Structure-Activity Relationship (SAR)?",
+                options: [
+                    "A technique to measure drug toxicity",
+                    "A principle describing the relationship between molecular structures and biological activity",
+                    "A method to synthesize new compounds",
+                    "A regulatory requirement"
+                ],
+                correct: 1,
+                explanation: "SAR establishes the relationship between chemical structure and biological activity."
+            },
+            {
+                section: "Introduction to SAR",
+                question: "The PRIMARY purpose of SAR in drug discovery is:",
+                options: [
+                    "To reduce manufacturing costs",
+                    "To identify parts of a molecule important to biological activity",
+                    "To determine drug expiration dates",
+                    "To establish marketing strategies"
+                ],
+                correct: 1,
+                explanation: "SAR helps identify which structural features are essential for activity."
+            },
+            {
+                section: "Alcohols and Phenols",
+                question: "Alcohols and phenols can act as:",
+                options: [
+                    "Hydrogen bond acceptor only",
+                    "Hydrogen bond donor only",
+                    "Both hydrogen bond acceptor and donor",
+                    "Neither"
+                ],
+                correct: 2,
+                explanation: "The oxygen has lone pairs (HBA) and O-H can donate (HBD)."
+            },
+            {
+                section: "Alcohols and Phenols",
+                question: "When converting R-OH to R-O-CH₃, what happens to HBD?",
+                options: [
+                    "It increases",
+                    "It remains the same",
+                    "It is lost",
+                    "It converts to ionic"
+                ],
+                correct: 2,
+                explanation: "The hydrogen is removed, eliminating HBD capability."
+            },
+            {
+                section: "Amines",
+                question: "How many HBD sites does a primary amine (R-NH₂) have?",
+                options: ["0", "1", "2", "3"],
+                correct: 2,
+                explanation: "Two N-H bonds, each capable of donating a hydrogen bond."
+            },
+            {
+                section: "Amines",
+                question: "Which has HBA but NO HBD?",
+                options: [
+                    "Primary amine",
+                    "Secondary amine",
+                    "Tertiary amine",
+                    "Quaternary ammonium"
+                ],
+                correct: 2,
+                explanation: "Tertiary amines have lone pair (HBA) but no N-H (no HBD)."
+            },
+            {
+                section: "Aromatic Rings",
+                question: "Which is planar - aromatic or cyclohexane?",
+                options: [
+                    "Aromatic only",
+                    "Cyclohexane only",
+                    "Both",
+                    "Neither"
+                ],
+                correct: 0,
+                explanation: "Benzene is planar (sp²); cyclohexane is not (chair/boat)."
+            },
+            {
+                section: "Aromatic Rings",
+                question: "Cyclohexane rings compared to aromatic rings:",
+                options: [
+                    "More planar",
+                    "Have axial protons causing steric clashes",
+                    "More aromatic",
+                    "Smaller"
+                ],
+                correct: 1,
+                explanation: "Non-planar with protruding H atoms creates steric issues."
+            },
+            {
+                section: "Ketones and Aldehydes",
+                question: "Carbonyl geometry is:",
+                options: [
+                    "Tetrahedral",
+                    "Planar (trigonal)",
+                    "Linear",
+                    "Octahedral"
+                ],
+                correct: 1,
+                explanation: "C=O is sp² hybridized, trigonal planar (120°)."
+            },
+            {
+                section: "Ketones and Aldehydes",
+                question: "After reducing ketone to alcohol, geometry becomes:",
+                options: [
+                    "More planar",
+                    "Tetrahedral",
+                    "Linear",
+                    "Unchanged"
+                ],
+                correct: 1,
+                explanation: "Reduction changes sp² (planar) to sp³ (tetrahedral)."
+            },
+            {
+                section: "Amides",
+                question: "Which is planar and cannot rotate?",
+                options: [
+                    "Amide (partial double bond)",
+                    "Amine",
+                    "Both",
+                    "Neither"
+                ],
+                correct: 0,
+                explanation: "Resonance creates partial C-N double bond, restricting rotation."
+            },
+            {
+                section: "Amides",
+                question: "In amides, the nitrogen lone pair is:",
+                options: [
+                    "Fully available for H-bonding",
+                    "Delocalized (resonance), reducing HBA",
+                    "Always protonated",
+                    "Absent"
+                ],
+                correct: 1,
+                explanation: "Resonance makes nitrogen a poor HBA."
+            },
+            {
+                section: "Carboxylic Acids",
+                question: "At pH 7.4, carboxylic acid exists as:",
+                options: [
+                    "R-COOH",
+                    "R-COO⁻ (ionized)",
+                    "R-CO⁺",
+                    "Ester"
+                ],
+                correct: 1,
+                explanation: "Carboxylic acids (pKa ~4-5) are ionized at pH 7.4."
+            },
+            {
+                section: "Carboxylic Acids",
+                question: "Esters as prodrugs:",
+                options: [
+                    "More active than acids",
+                    "More lipophilic, improve absorption, hydrolyze to active",
+                    "More water soluble",
+                    "Cannot metabolize"
+                ],
+                correct: 1,
+                explanation: "Ester masks polarity for absorption; esterases regenerate acid."
+            },
+            {
+                section: "Halogens",
+                question: "Which halogen is most electron-withdrawing?",
+                options: ["Hydrogen", "Fluorine", "Chlorine", "Bromine"],
+                correct: 1,
+                explanation: "Fluorine is most electronegative."
+            },
+            {
+                section: "Halogens",
+                question: "Which halogen is same size as hydrogen?",
+                options: ["Fluorine", "Chlorine", "Bromine", "Iodine"],
+                correct: 0,
+                explanation: "Fluorine's radius is similar to hydrogen."
+            },
+            {
+                section: "Alkyl Halides",
+                question: "Most reactive alkylating agent:",
+                options: ["R-Cl", "R-Br", "R-I", "R-F"],
+                correct: 2,
+                explanation: "Iodine is best leaving group (weakest C-X bond)."
+            },
+            {
+                section: "Alkyl Halides",
+                question: "Problem with alkylating agents:",
+                options: [
+                    "Too expensive",
+                    "Low selectivity leads to toxicity",
+                    "Cannot penetrate cells",
+                    "Too hydrophilic"
+                ],
+                correct: 1,
+                explanation: "React non-specifically causing toxicity."
+            },
+            {
+                section: "β-Lactams",
+                question: "Which lactam has most ring strain?",
+                options: [
+                    "β-Lactam (4-membered)",
+                    "γ-Lactam (5-membered)",
+                    "δ-Lactam (6-membered)",
+                    "Equal"
+                ],
+                correct: 0,
+                explanation: "4-membered has most angle strain (~90° vs 109.5°)."
+            },
+            {
+                section: "β-Lactams",
+                question: "Penicillin contains:",
+                options: [
+                    "β-lactam (4-membered)",
+                    "γ-lactam (5-membered)",
+                    "δ-lactam (6-membered)",
+                    "No lactam"
+                ],
+                correct: 0,
+                explanation: "β-lactam is key pharmacophore in penicillins."
+            },
+            {
+                section: "Stereochemistry",
+                question: "Enantiomers are:",
+                options: [
+                    "Identical",
+                    "Non-superimposable mirror images",
+                    "Different connectivity",
+                    "Achiral"
+                ],
+                correct: 1,
+                explanation: "Mirror images that cannot be superimposed."
+            },
+            {
+                section: "Stereochemistry",
+                question: "In chiral binding sites:",
+                options: [
+                    "Both enantiomers bind identically",
+                    "One may bind better than the other",
+                    "No effect",
+                    "Only achiral bind"
+                ],
+                correct: 1,
+                explanation: "3D fit matters - enantiomers fit differently."
+            },
+            {
+                section: "Bioisosteres",
+                question: "Tetrazoles are bioisosteres of COOH because:",
+                options: [
+                    "Identical",
+                    "Similar pKa (~4.5-5), ionic properties, size",
+                    "Easier to make",
+                    "Same atoms"
+                ],
+                correct: 1,
+                explanation: "Functionally replace COOH with better stability."
+            },
+            {
+                section: "General Concepts",
+                question: "SAR ultimate goal:",
+                options: [
+                    "Make drugs expensive",
+                    "Optimize structure for efficacy and minimal side effects",
+                    "Complicate development",
+                    "Avoid testing"
+                ],
+                correct: 1,
+                explanation: "Rational drug design improving therapeutic index."
+            },
+            {
+                section: "General Concepts",
+                question: "Why is SAR important?",
+                options: [
+                    "Required by law",
+                    "Enables rational, systematic optimization",
+                    "Makes drugs cheaper",
+                    "Eliminates trials"
+                ],
+                correct: 1,
+                explanation: "Transforms discovery from trial-and-error to mechanism-based."
+            }
+        ];
+
+        // QUIZ FUNCTIONS
+        function initQuiz() {
+            const quizContent = document.getElementById('quizContent');
+            quizData.forEach((q, index) => {
+                if (q.section !== currentSection) {
+                    currentSection = q.section;
+                    const sectionTitle = document.createElement('div');
+                    sectionTitle.className = 'section-title';
+                    sectionTitle.textContent = `📖 ${currentSection}`;
+                    quizContent.appendChild(sectionTitle);
+                }
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                card.innerHTML = `
+                    <div class="question-header">
+                        <div class="question-number">${index + 1}</div>
+                        <div class="question-text">${q.question}</div>
+                    </div>
+                    <div class="options" id="options-${index}">
+                        ${q.options.map((option, optIndex) => `
+                            <div class="option" onclick="selectAnswer(${index}, ${optIndex})">
+                                <span class="option-letter">${String.fromCharCode(65 + optIndex)})</span>
+                                <span>${option}</span>
+                                <span class="check-mark"></span>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="answer-section" id="answer-${index}">
+                        <div class="answer-label">✓ Correct: ${String.fromCharCode(65 + q.correct)}</div>
+                        <div class="explanation">${q.explanation}</div>
+                    </div>
+                `;
+                quizContent.appendChild(card);
+            });
+        }
+
+        function selectAnswer(questionIndex, selectedOption) {
+            const question = quizData[questionIndex];
+            const optionsDiv = document.getElementById(`options-${questionIndex}`);
+            const options = optionsDiv.querySelectorAll('.option');
+            const answerSection = document.getElementById(`answer-${questionIndex}`);
+            const alreadyAnswered = options[0].classList.contains('disabled');
+            
+            if (!alreadyAnswered) {
+                answeredCount++;
+                if (selectedOption === question.correct) correctCount++;
+            }
+            options.forEach(opt => opt.classList.add('disabled'));
+            options[question.correct].classList.add('correct');
+            options[question.correct].querySelector('.check-mark').textContent = '✓';
+            if (selectedOption !== question.correct) {
+                options[selectedOption].classList.add('incorrect');
+                options[selectedOption].querySelector('.check-mark').textContent = '✗';
+            }
+            answerSection.classList.add('show');
+            updateStats();
+            if (answeredCount === quizData.length) showResults();
+        }
+
+        function updateStats() {
+            document.getElementById('answeredCount').textContent = answeredCount;
+            document.getElementById('correctCount').textContent = correctCount;
+            const percentage = answeredCount > 0 ? Math.round((correctCount / answeredCount) * 100) : 0;
+            document.getElementById('scorePercent').textContent = percentage + '%';
+            const progress = (answeredCount / quizData.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function showResults() {
+            const percentage = Math.round((correctCount / quizData.length) * 100);
+            document.getElementById('finalScore').textContent = percentage + '%';
+            let grade, emoji;
+            if (percentage >= 90) { grade = "Excellent! Master Level 🌟"; emoji = "🎓"; }
+            else if (percentage >= 80) { grade = "Very Good! 💪"; emoji = "😊"; }
+            else if (percentage >= 70) { grade = "Good! 👍"; emoji = "🙂"; }
+            else if (percentage >= 60) { grade = "Fair 📚"; emoji = "🤔"; }
+            else { grade = "Keep Studying! 💪"; emoji = "📖"; }
+            
+            const nameInput = document.getElementById('playerName');
+            const playerName = nameInput ? nameInput.value.trim() : "";
+            const displayName = playerName || "Anonymous";
+            
+            document.getElementById('gradeMessage').innerHTML = `
+                <div style="font-size: 3em; margin: 20px 0;">${emoji}</div>
+                <div>${grade}</div>
+                <div style="margin-top: 20px; font-size: 1.2em;">
+                    ${displayName}, you got ${correctCount} out of ${quizData.length} correct!
+                </div>
+            `;
+            document.getElementById('resultCard').classList.add('show');
+            if (firebaseInitialized) saveResultToFirestore(displayName, percentage, correctCount, quizData.length);
+            else document.getElementById('gradeMessage').innerHTML += `
+                <div style="margin-top: 15px; font-size: 0.9em; opacity: 0.8;">
+                    ⚠️ Leaderboard offline - score not saved
+                </div>
+            `;
+            loadLeaderboard();
+            document.getElementById('resultCard').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function restartQuiz() { location.reload(); }
+        function reviewAnswers() {
+            document.getElementById('resultCard').classList.remove('show');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // FIREBASE FUNCTIONS
+        function saveResultToFirestore(name, percent, correct, total) {
+            if (!firebaseInitialized || !db) return;
+            db.collection(RESULTS_COLLECTION).add({
+                name, percent, correct, total,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            })
+            .then(() => showFirebaseStatus('success', '✅ Score saved to leaderboard!'))
+            .catch(err => showFirebaseStatus('error', '❌ Could not save score'));
+        }
+
+        function loadLeaderboard() {
+            const leaderboardSection = document.getElementById('leaderboardSection');
+            if (!leaderboardSection) return;
+            if (!firebaseInitialized || !db) {
+                leaderboardSection.innerHTML = `
+                    <div style="text-align: center; padding: 30px; color: #6c757d;">
+                        <p style="font-size: 1.2em; margin-bottom: 10px;">🔌 Leaderboard Offline</p>
+                        <p>Configure Firebase to enable global leaderboard</p>
+                    </div>
+                `;
+                return;
+            }
+            leaderboardSection.innerHTML = "<p style='text-align: center; color: #6c757d;'>Loading...</p>";
+            db.collection(RESULTS_COLLECTION)
+                .orderBy("percent", "desc")
+                .orderBy("timestamp", "asc")
+                .limit(10)
+                .get()
+                .then(snapshot => {
+                    if (snapshot.empty) {
+                        leaderboardSection.innerHTML = `
+                            <div style="text-align: center; padding: 30px; color: #6c757d;">
+                                <p style="font-size: 1.2em;">🏆 Be the First!</p>
+                                <p>Complete the quiz to claim #1!</p>
+                            </div>
+                        `;
+                        return;
+                    }
+                    let html = `<table class="leaderboard-table"><thead><tr>
+                        <th style="width: 60px;">Rank</th>
+                        <th>Name</th>
+                        <th style="width: 100px;">Score</th>
+                        <th style="width: 100px;">Correct</th>
+                        <th style="width: 180px;">Date</th>
+                    </tr></thead><tbody>`;
+                    let rank = 1;
+                    snapshot.forEach(doc => {
+                        const data = doc.data();
+                        const date = data.timestamp ? data.timestamp.toDate().toLocaleDateString() : "-";
+                        const rankEmoji = rank === 1 ? "🥇" : rank === 2 ? "🥈" : rank === 3 ? "🥉" : rank;
+                        html += `<tr>
+                            <td style="font-weight: bold;">${rankEmoji}</td>
+                            <td><strong>${data.name}</strong></td>
+                            <td><span style="color: #667eea; font-weight: bold;">${data.percent}%</span></td>
+                            <td>${data.correct}/${data.total}</td>
+                            <td style="color: #6c757d; font-size: 0.9em;">${date}</td>
+                        </tr>`;
+                        rank++;
+                    });
+                    html += "</tbody></table>";
+                    leaderboardSection.innerHTML = html;
+                })
+                .catch(err => {
+                    leaderboardSection.innerHTML = `
+                        <div style="text-align: center; padding: 30px; color: #dc3545;">
+                            <p>❌ Could not load leaderboard</p>
+                        </div>
+                    `;
+                });
+        }
+
+        window.onload = function() {
+            initializeFirebase();
+            initQuiz();
+            loadLeaderboard();
+        };
+    </script>
+</body>
+</html>
+
+<!-- 
+════════════════════════════════════════════════════════════════════════════════
+🔥 FIREBASE SETUP GUIDE 🔥
+════════════════════════════════════════════════════════════════════════════════
+
+📋 STEP 1: CREATE FIREBASE PROJECT
+─────────────────────────────────────
+1. Go to: https://console.firebase.google.com/
+2. Sign in with Google account
+3. Click "Add project"
+4. Name: "sar-quiz-leaderboard" (or anything)
+5. ✅ Enable Google Analytics (optional)
+6. Click "Create project"
+7. Wait 30 seconds ⏳
+
+📱 STEP 2: ADD WEB APP
+─────────────────────────────────────
+1. In project dashboard, click </> icon (Web)
+2. App nickname: "SAR Quiz"
+3. Click "Register app"
+4. You'll see firebaseConfig code
+5. COPY these values (DON'T close this page yet!):
+   • apiKey
+   • authDomain
+   • projectId  
+   • storageBucket
+   • messagingSenderId
+   • appId
+
+📝 STEP 3: UPDATE THIS FILE
+─────────────────────────────────────
+1. Find firebaseConfig in this file (around line 360)
+2. Replace "YOUR_API_KEY_HERE" with your actual values
+3. Example:
+   
+   const firebaseConfig = {
+       apiKey: "AIzaSyDxxxxx...",
+       authDomain: "sar-quiz-12345.firebaseapp.com",
+       projectId: "sar-quiz-12345",
+       ...
+   };
+
+4. Save this file
+
+🗄️ STEP 4: ENABLE FIRESTORE DATABASE
+─────────────────────────────────────
+1. In Firebase Console, go to "Build" → "Firestore Database"
+2. Click "Create database"
+3. Choose "Start in TEST MODE" ⚠️
+4. Select location (choose closest to you)
+5. Click "Enable"
+6. Wait for setup to complete
+
+🔐 STEP 5: SET FIRESTORE RULES
+─────────────────────────────────────
+1. In Firestore, click "Rules" tab
+2. Replace ALL text with this:
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /sarQuizResults/{document=**} {
+      allow read: if true;
+      allow write: if true;
+    }
+  }
+}
+
+3. Click "Publish"
+4. This allows anyone to save/read scores ✓
+
+✅ STEP 6: TEST YOUR QUIZ
+─────────────────────────────────────
+1. Save this file
+2. Upload to GitHub Pages (or open locally)
+3. Take the quiz
+4. Enter your name
+5. Check if leaderboard shows your score!
+
+════════════════════════════════════════════════════════════════════════════════
+🎯 QUICK CHECKLIST
+════════════════════════════════════════════════════════════════════════════════
+
+□ Created Firebase project
+□ Added Web app
+□ Copied config values
+□ Updated firebaseConfig in this file
+□ Enabled Firestore Database
+□ Set Firestore Rules to allow read/write
+□ Saved file
+□ Uploaded to web or tested locally
+□ Leaderboard working! 🎉
+
+════════════════════════════════════════════════════════════════════════════════
+💰 COST: FREE FOREVER!
+════════════════════════════════════════════════════════════════════════════════
+
+Firebase Free Tier includes:
+• 50,000 reads/day
+• 20,000 writes/day  
+• 1GB storage
+• More than enough for educational quizzes!
+
+════════════════════════════════════════════════════════════════════════════════
+🆘 TROUBLESHOOTING
+════════════════════════════════════════════════════════════════════════════════
+
+❌ "Firebase not configured"
+   → You haven't replaced placeholder values in firebaseConfig
+
+❌ "Permission denied"
+   → Check Firestore Rules (Step 5)
+   → Make sure you used TEST MODE
+
+❌ "Leaderboard connection failed"
+   → Open browser console (F12) for detailed error
+   → Verify project ID matches Firebase project
+   → Make sure Firestore is enabled
+
+❌ Scores not saving
+   → Check Firestore Rules allow write
+   → Verify internet connection
+   → Check browser console for errors
+
+✅ Quiz works offline
+   → Quiz works perfectly without Firebase!
+   → Leaderboard is just an optional bonus
+
+════════════════════════════════════════════════════════════════════════════════
+🔒 SECURITY NOTES
+════════════════════════════════════════════════════════════════════════════════
+
+⚠️ TEST MODE allows public read/write
+   ✓ Perfect for educational quizzes
+   ✓ Simple setup, no authentication needed
+   ⚠️ Not for sensitive data
+   ⚠️ Anyone can modify scores (trust-based)
+
+For production apps:
+• Add Firebase Authentication
+• Update rules to require auth
+• Add server-side validation
+
+════════════════════════════════════════════════════════════════════════════════
+📚 NEED MORE HELP?
+════════════════════════════════════════════════════════════════════════════════
+
+Firebase Docs: https://firebase.google.com/docs/firestore
+Video Tutorial: YouTube "Firebase Firestore Setup 2024"
+Questions? Check browser console (F12) for error messages
+
+════════════════════════════════════════════════════════════════════════════════
+🎓 YOU'RE ALL SET!
+════════════════════════════════════════════════════════════════════════════════
+
+Follow the steps above and your quiz will have a working global leaderboard!
+Share the link with friends and compete for the top spot! 🏆
+
+Good luck! 📚✨
+════════════════════════════════════════════════════════════════════════════════
+-->
